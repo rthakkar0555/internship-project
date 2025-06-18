@@ -1,5 +1,5 @@
 
-# 🛒 MERN Stack E-Commerce Website (2024)
+# 🛒 MERN Stack E-Commerce Website
 
 This is a full-featured **E-commerce web application** built using the **MERN Stack** (MongoDB, Express.js, React.js, Node.js). This project  includes features like product management, authentication, order system, PayPal integration, and admin panel.
 
