@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_ENDPOINTS, AXIOS_CONFIG, logApiCall } from "../../../config/api";
 
 const initialState = {
   isLoading: false,
@@ -9,11 +10,12 @@ const initialState = {
 export const addNewAddress = createAsyncThunk(
   "/addresses/addNewAddress",
   async (formData) => {
+    logApiCall('POST', API_ENDPOINTS.ADDRESS.ADD, formData);
     const response = await axios.post(
-      "http://localhost:5000/api/shop/address/add",
-      formData
+      API_ENDPOINTS.ADDRESS.ADD,
+      formData,
+      AXIOS_CONFIG
     );
-
     return response.data;
   }
 );
@@ -21,10 +23,9 @@ export const addNewAddress = createAsyncThunk(
 export const fetchAllAddresses = createAsyncThunk(
   "/addresses/fetchAllAddresses",
   async (userId) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/shop/address/get/${userId}`
-    );
-
+    const url = API_ENDPOINTS.ADDRESS.GET(userId);
+    logApiCall('GET', url);
+    const response = await axios.get(url, AXIOS_CONFIG);
     return response.data;
   }
 );
@@ -32,11 +33,9 @@ export const fetchAllAddresses = createAsyncThunk(
 export const editaAddress = createAsyncThunk(
   "/addresses/editaAddress",
   async ({ userId, addressId, formData }) => {
-    const response = await axios.put(
-      `http://localhost:5000/api/shop/address/update/${userId}/${addressId}`,
-      formData
-    );
-
+    const url = API_ENDPOINTS.ADDRESS.UPDATE(userId, addressId);
+    logApiCall('PUT', url, formData);
+    const response = await axios.put(url, formData, AXIOS_CONFIG);
     return response.data;
   }
 );
@@ -44,10 +43,9 @@ export const editaAddress = createAsyncThunk(
 export const deleteAddress = createAsyncThunk(
   "/addresses/deleteAddress",
   async ({ userId, addressId }) => {
-    const response = await axios.delete(
-      `http://localhost:5000/api/shop/address/delete/${userId}/${addressId}`
-    );
-
+    const url = API_ENDPOINTS.ADDRESS.DELETE(userId, addressId);
+    logApiCall('DELETE', url);
+    const response = await axios.delete(url, AXIOS_CONFIG);
     return response.data;
   }
 );

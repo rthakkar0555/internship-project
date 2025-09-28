@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_ENDPOINTS, AXIOS_CONFIG, logApiCall } from "../../../config/api";
 
 const initialState = {
   orderList: [],
@@ -9,10 +10,11 @@ const initialState = {
 export const getAllOrdersForAdmin = createAsyncThunk(
   "/order/getAllOrdersForAdmin",
   async () => {
+    logApiCall('GET', API_ENDPOINTS.ADMIN_ORDERS.GET_ALL);
     const response = await axios.get(
-      `http://localhost:5000/api/admin/orders/get`
+      API_ENDPOINTS.ADMIN_ORDERS.GET_ALL,
+      AXIOS_CONFIG
     );
-
     return response.data;
   }
 );
@@ -20,10 +22,9 @@ export const getAllOrdersForAdmin = createAsyncThunk(
 export const getOrderDetailsForAdmin = createAsyncThunk(
   "/order/getOrderDetailsForAdmin",
   async (id) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/admin/orders/details/${id}`
-    );
-
+    const url = API_ENDPOINTS.ADMIN_ORDERS.GET_DETAILS(id);
+    logApiCall('GET', url);
+    const response = await axios.get(url, AXIOS_CONFIG);
     return response.data;
   }
 );
@@ -31,13 +32,13 @@ export const getOrderDetailsForAdmin = createAsyncThunk(
 export const updateOrderStatus = createAsyncThunk(
   "/order/updateOrderStatus",
   async ({ id, orderStatus }) => {
+    const url = API_ENDPOINTS.ADMIN_ORDERS.UPDATE(id);
+    logApiCall('PUT', url, { orderStatus });
     const response = await axios.put(
-      `http://localhost:5000/api/admin/orders/update/${id}`,
-      {
-        orderStatus,
-      }
+      url,
+      { orderStatus },
+      AXIOS_CONFIG
     );
-
     return response.data;
   }
 );

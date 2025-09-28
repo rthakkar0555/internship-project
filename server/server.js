@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const { specs, swaggerUi } = require('./config/swagger');
 
 const authRouter = require("./routes/auth/auth-routes");
 const adminProductsRouter = require("./routes/admin/products-routes");
@@ -23,7 +24,7 @@ const commonFeatureRouter = require("./routes/common/feature-routes");
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB connected"))
-  .catch((error) => console.log(error));
+  .catch((error) => console.log("MongoDB connection error:", error));
 
 
 const app = express();
@@ -31,7 +32,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
       "Content-Type",
@@ -59,4 +60,13 @@ app.use("/api/shop/review", shopReviewRouter);
 
 app.use("/api/common/feature", commonFeatureRouter);
 
-app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
+// Swagger documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'E-commerce API Documentation'
+}));
+
+app.listen(PORT, () => {
+  console.log(`Server is now running on port ${PORT}`);
+  console.log(`Swagger documentation available at: ${process.env.PORT || 'http://localhost:5173'}/api-docs`);
+});

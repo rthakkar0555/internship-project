@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_ENDPOINTS, AXIOS_CONFIG, logApiCall } from "../../../config/api";
 
 const initialState = {
   approvalURL: null,
@@ -12,11 +13,12 @@ const initialState = {
 export const createNewOrder = createAsyncThunk(
   "/order/createNewOrder",
   async (orderData) => {
+    logApiCall('POST', API_ENDPOINTS.ORDERS.CREATE, orderData);
     const response = await axios.post(
-      "http://localhost:5000/api/shop/order/create",
-      orderData
+      API_ENDPOINTS.ORDERS.CREATE,
+      orderData,
+      AXIOS_CONFIG
     );
-
     return response.data;
   }
 );
@@ -24,15 +26,12 @@ export const createNewOrder = createAsyncThunk(
 export const capturePayment = createAsyncThunk(
   "/order/capturePayment",
   async ({ paymentId, payerId, orderId }) => {
+    logApiCall('POST', API_ENDPOINTS.ORDERS.CAPTURE, { paymentId, payerId, orderId });
     const response = await axios.post(
-      "http://localhost:5000/api/shop/order/capture",
-      {
-        paymentId,
-        payerId,
-        orderId,
-      }
+      API_ENDPOINTS.ORDERS.CAPTURE,
+      { paymentId, payerId, orderId },
+      AXIOS_CONFIG
     );
-
     return response.data;
   }
 );
@@ -40,10 +39,9 @@ export const capturePayment = createAsyncThunk(
 export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
   async (userId) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/shop/order/list/${userId}`
-    );
-
+    const url = API_ENDPOINTS.ORDERS.GET_USER_ORDERS(userId);
+    logApiCall('GET', url);
+    const response = await axios.get(url, AXIOS_CONFIG);
     return response.data;
   }
 );
@@ -51,10 +49,9 @@ export const getAllOrdersByUserId = createAsyncThunk(
 export const getOrderDetails = createAsyncThunk(
   "/order/getOrderDetails",
   async (id) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/shop/order/details/${id}`
-    );
-
+    const url = API_ENDPOINTS.ORDERS.GET_ORDER_DETAILS(id);
+    logApiCall('GET', url);
+    const response = await axios.get(url, AXIOS_CONFIG);
     return response.data;
   }
 );

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_ENDPOINTS, AXIOS_CONFIG, logApiCall } from "../../config/api";
 
 const initialState = {
   isAuthenticated: false,
@@ -9,67 +10,50 @@ const initialState = {
 
 export const registerUser = createAsyncThunk(
   "/auth/register",
-
   async (formData) => {
+    logApiCall('POST', API_ENDPOINTS.AUTH.REGISTER, formData);
     const response = await axios.post(
-      "http://localhost:5000/api/auth/register",
+      API_ENDPOINTS.AUTH.REGISTER,
       formData,
-      {
-        withCredentials: true,
-      }
+      AXIOS_CONFIG
     );
-
     return response.data;
   }
 );
 
 export const loginUser = createAsyncThunk(
   "/auth/login",
-
   async (formData) => {
+    logApiCall('POST', API_ENDPOINTS.AUTH.LOGIN, formData);
     const response = await axios.post(
-      "http://localhost:5000/api/auth/login",
+      API_ENDPOINTS.AUTH.LOGIN,
       formData,
-      {
-        withCredentials: true,
-      }
+      AXIOS_CONFIG
     );
-
     return response.data;
   }
 );
 
 export const logoutUser = createAsyncThunk(
   "/auth/logout",
-
   async () => {
-    const response = await axios.post(
-      "http://localhost:5000/api/auth/logout",
-      {},
-      {
-        withCredentials: true,
-      }
-    );
-
+    logApiCall('POST', API_ENDPOINTS.AUTH.LOGOUT);
+    const response = await axios.post(API_ENDPOINTS.AUTH.LOGOUT, {}, AXIOS_CONFIG);
     return response.data;
   }
 );
 
 export const checkAuth = createAsyncThunk(
   "/auth/checkauth",
-
   async () => {
-    const response = await axios.get(
-      "http://localhost:5000/api/auth/check-auth",
-      {
-        withCredentials: true,
-        headers: {
-          "Cache-Control":
-            "no-store, no-cache, must-revalidate, proxy-revalidate",
-        },
-      }
-    );
-
+    logApiCall('GET', API_ENDPOINTS.AUTH.CHECK_AUTH);
+    const response = await axios.get(API_ENDPOINTS.AUTH.CHECK_AUTH, {
+      ...AXIOS_CONFIG,
+      headers: {
+        ...AXIOS_CONFIG.headers,
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
+    });
     return response.data;
   }
 );

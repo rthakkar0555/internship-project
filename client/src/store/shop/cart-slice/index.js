@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { API_ENDPOINTS, AXIOS_CONFIG, logApiCall } from "../../../config/api";
 
 const initialState = {
   cartItems: [],
@@ -9,15 +10,12 @@ const initialState = {
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async ({ userId, productId, quantity }) => {
+    logApiCall('POST', API_ENDPOINTS.CART.ADD, { userId, productId, quantity });
     const response = await axios.post(
-      "http://localhost:5000/api/shop/cart/add",
-      {
-        userId,
-        productId,
-        quantity,
-      }
+      API_ENDPOINTS.CART.ADD,
+      { userId, productId, quantity },
+      AXIOS_CONFIG
     );
-
     return response.data;
   }
 );
@@ -25,10 +23,9 @@ export const addToCart = createAsyncThunk(
 export const fetchCartItems = createAsyncThunk(
   "cart/fetchCartItems",
   async (userId) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/shop/cart/get/${userId}`
-    );
-
+    const url = API_ENDPOINTS.CART.GET(userId);
+    logApiCall('GET', url);
+    const response = await axios.get(url, AXIOS_CONFIG);
     return response.data;
   }
 );
@@ -36,10 +33,9 @@ export const fetchCartItems = createAsyncThunk(
 export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
   async ({ userId, productId }) => {
-    const response = await axios.delete(
-      `http://localhost:5000/api/shop/cart/${userId}/${productId}`
-    );
-
+    const url = API_ENDPOINTS.CART.DELETE(userId, productId);
+    logApiCall('DELETE', url);
+    const response = await axios.delete(url, AXIOS_CONFIG);
     return response.data;
   }
 );
@@ -47,15 +43,12 @@ export const deleteCartItem = createAsyncThunk(
 export const updateCartQuantity = createAsyncThunk(
   "cart/updateCartQuantity",
   async ({ userId, productId, quantity }) => {
+    logApiCall('PUT', API_ENDPOINTS.CART.UPDATE, { userId, productId, quantity });
     const response = await axios.put(
-      "http://localhost:5000/api/shop/cart/update-cart",
-      {
-        userId,
-        productId,
-        quantity,
-      }
+      API_ENDPOINTS.CART.UPDATE,
+      { userId, productId, quantity },
+      AXIOS_CONFIG
     );
-
     return response.data;
   }
 );

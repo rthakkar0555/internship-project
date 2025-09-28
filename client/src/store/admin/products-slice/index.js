@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { API_ENDPOINTS, AXIOS_CONFIG, logApiCall } from "../../../config/api";
 
 const initialState = {
   isLoading: false,
@@ -9,16 +10,12 @@ const initialState = {
 export const addNewProduct = createAsyncThunk(
   "/products/addnewproduct",
   async (formData) => {
+    logApiCall('POST', API_ENDPOINTS.ADMIN_PRODUCTS.ADD, formData);
     const result = await axios.post(
-      "http://localhost:5000/api/admin/products/add",
+      API_ENDPOINTS.ADMIN_PRODUCTS.ADD,
       formData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      AXIOS_CONFIG
     );
-
     return result?.data;
   }
 );
@@ -26,10 +23,11 @@ export const addNewProduct = createAsyncThunk(
 export const fetchAllProducts = createAsyncThunk(
   "/products/fetchAllProducts",
   async () => {
+    logApiCall('GET', API_ENDPOINTS.ADMIN_PRODUCTS.GET_ALL);
     const result = await axios.get(
-      "http://localhost:5000/api/admin/products/get"
+      API_ENDPOINTS.ADMIN_PRODUCTS.GET_ALL,
+      AXIOS_CONFIG
     );
-
     return result?.data;
   }
 );
@@ -37,16 +35,13 @@ export const fetchAllProducts = createAsyncThunk(
 export const editProduct = createAsyncThunk(
   "/products/editProduct",
   async ({ id, formData }) => {
+    const url = API_ENDPOINTS.ADMIN_PRODUCTS.EDIT(id);
+    logApiCall('PUT', url, formData);
     const result = await axios.put(
-      `http://localhost:5000/api/admin/products/edit/${id}`,
+      url,
       formData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      AXIOS_CONFIG
     );
-
     return result?.data;
   }
 );
@@ -54,10 +49,12 @@ export const editProduct = createAsyncThunk(
 export const deleteProduct = createAsyncThunk(
   "/products/deleteProduct",
   async (id) => {
+    const url = API_ENDPOINTS.ADMIN_PRODUCTS.DELETE(id);
+    logApiCall('DELETE', url);
     const result = await axios.delete(
-      `http://localhost:5000/api/admin/products/delete/${id}`
+      url,
+      AXIOS_CONFIG
     );
-
     return result?.data;
   }
 );
